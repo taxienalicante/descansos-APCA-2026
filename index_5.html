@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b5d3b">
+<title>DESCANSO TAXI 2026 APCA</title>
+<style>
+  :root{ --verde:#0b5d3b; --verde2:#0d7a4d; --gris:#f4f5f6; --borde:#cfd4d8;
+    --c-trab:#0d7a4d; --c-desc:#c62828; --c-914:#ef6c00; --c-1300:#f9a825; --c-esp:#1565c0; --c-exe:#607d8b; --c-ref:#2b9fd4; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; }
+  body{ font-family:-apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif; background:var(--gris); color:#1a1a1a;
+    min-height:100dvh; padding:12px calc(8px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left)); max-width:560px; margin:0 auto; }
+  header{ text-align:center; margin:4px 0 12px; }
+  header h1{ font-size:18px; margin:0; color:var(--verde); }
+  header p{ font-size:12px; color:#5a6268; margin:4px 0 0; }
+  .card{ background:#fff; border:1px solid var(--borde); border-radius:14px; padding:10px; margin-bottom:12px; }
+  label{ font-size:13px; font-weight:600; color:#333; }
+  .row{ display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+  .row > div{ flex:1; min-width:120px; }
+  input[type=number]{ width:100%; font-size:22px; font-weight:700; text-align:center; padding:10px; border:2px solid var(--borde); border-radius:10px; margin-top:6px; }
+  input[type=number]:focus{ outline:none; border-color:var(--verde2); }
+  .chk{ display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:10px 0; }
+  .chk input{ width:22px; height:22px; }
+  .grupo{ font-size:12px; color:#5a6268; margin-top:8px; min-height:16px; }
+  .navmes{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .navmes button{ border:none; background:#e8eef0; color:#0b3b28; font-size:18px; font-weight:800; width:44px; height:40px; border-radius:10px; }
+  .navmes .mes{ font-size:16px; font-weight:800; color:var(--verde); text-transform:capitalize; }
+  .dow{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:4px; }
+  .dow span{ text-align:center; font-size:11px; font-weight:700; color:#8a9299; }
+  .cal{ display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+  .dia{ min-height:82px; border-radius:9px; color:#fff; padding:3px 4px; display:flex; flex-direction:column; gap:1px; cursor:pointer; border:2px solid transparent; overflow:hidden; }
+  .dia.vacio{ background:transparent; cursor:default; min-height:0; }
+  .dia .top{ display:flex; justify-content:space-between; align-items:flex-start; gap:2px; }
+  .dia .nr{ display:flex; align-items:center; gap:2px; }
+  .dia .n{ font-size:12px; font-weight:800; line-height:1; }
+  .dia .hh{ font-size:9px; font-weight:800; line-height:1; background:rgba(0,0,0,.26); border-radius:5px; padding:2px 3px; white-space:nowrap; }
+  .dia .r{ font-size:7.5px; font-weight:800; background:rgba(0,0,0,.30); border-radius:4px; padding:0 2px; }
+  .dia .lab{ font-size:9px; font-weight:800; margin-top:9px; text-align:center; line-height:1; letter-spacing:-.2px; }
+  .dia .seg{ font-size:10.5px; font-weight:700; line-height:1.3; text-align:center; white-space:nowrap; }
+  .dia.sel{ border-color:#111; box-shadow:0 0 0 2px #fff inset; }
+  .detalle{ margin-top:12px; border-radius:12px; padding:12px 14px; color:#fff; }
+  .detalle .f{ font-size:13px; opacity:.9; }
+  .detalle .m{ font-size:16px; font-weight:800; margin:4px 0; }
+  .detalle .h{ font-size:13px; opacity:.95; }
+  .leyenda{ display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:6px; }
+  .leyenda span{ font-size:12px; display:flex; align-items:center; gap:6px; }
+  .dot{ width:14px; height:14px; border-radius:4px; display:inline-block; }
+  .resumen{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px; }
+  .kpi{ background:#f4f6f7; border-radius:10px; padding:10px; text-align:center; }
+  .kpi b{ display:block; font-size:20px; color:var(--verde); }
+  .kpi small{ font-size:11px; color:#5a6268; }
+  .aviso{ background:#fff8e1; border:1px solid #f0d98a; border-radius:12px; padding:11px 13px; font-size:12px; color:#5b4b16; line-height:1.5; }
+  footer{ font-size:11px; color:#8a9299; text-align:center; margin-top:12px; line-height:1.5; }
+</style>
+</head>
+<body>
+<header>
+  <h1>DESCANSO TAXI 2026 APCA</h1>
+  <p>Consulta orientativa por número de licencia</p>
+  <p style="margin-top:4px">* Si detecta algún error, comuníquelo.</p>
+</header>
+
+<div class="card">
+  <div class="row">
+    <div>
+      <label for="lic">Nº de licencia (1–538)</label>
+      <input id="lic" type="number" min="1" max="538" inputmode="numeric" placeholder="0">
+    </div>
+    <div style="flex:0 0 auto">
+      <label class="chk"><input id="adaptado" type="checkbox"> Vehículo adaptado</label>
+    </div>
+  </div>
+  <div class="grupo" id="grupo"></div>
+</div>
+
+<div class="card">
+  <div class="navmes">
+    <button id="prev">‹</button>
+    <div class="mes" id="mesTit"></div>
+    <button id="next">›</button>
+  </div>
+  <div class="dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+  <div class="cal" id="cal"></div>
+  <div class="detalle" id="detalle" style="background:#607d8b"><div class="f">—</div><div class="m">Elige tu licencia y un día</div><div class="h"></div></div>
+</div>
+
+<div class="card">
+  <label>Leyenda</label>
+  <div class="leyenda">
+    <span><i class="dot" style="background:var(--c-trab)"></i>Trabajas</span>
+    <span><i class="dot" style="background:var(--c-desc)"></i>Descanso día (semanal)</span>
+    <span><i class="dot" style="background:var(--c-914)"></i>Descanso 09–14</span>
+    <span><i class="dot" style="background:var(--c-1300)"></i>Libre desde 13:00</span>
+    <span><i class="dot" style="background:var(--c-esp)"></i>Especial 24 h</span>
+    <span><i class="dot" style="background:var(--c-exe)"></i>Exento (adaptado)</span>
+    <span><i class="dot" style="background:var(--c-ref)"></i>Refuerzo (no descansas esa semana)</span>
+  </div>
+</div>
+
+<div class="aviso">Ayuda <b>no oficial</b>. Manda la resolución de la Junta. Válida para <b>2026</b>. Los vehículos adaptados no tienen descansos ni límite de horas.</div>
+<footer id="foot"></footer>
+
+<script>
+(function(root){
+  // ===== APC Alicante 2026 — Resolución D.G. 27/11/2025 (DOGV 03/12/2025) =====
+  function grupoInfo(lic){
+    if(lic>=1  && lic<=106) return {letra:'B', dia:5, diaN:'Viernes'};
+    if(lic>=107&& lic<=212) return {letra:'C', dia:1, diaN:'Lunes'};
+    if(lic>=213&& lic<=318) return {letra:'D', dia:2, diaN:'Martes'};
+    if(lic>=319&& lic<=425) return {letra:'E', dia:3, diaN:'Miércoles'};
+    if(lic>=426&& lic<=538) return {letra:'A', dia:4, diaN:'Jueves'};
+    return null;
+  }
+  function within(s,a,b){ return s>=a && s<=b; }
+
+  // Refuerzos (último dígito -> esa semana NO se descansa nada)
+  var REFUERZOS = [
+    {d:[4,5], a:'2026-04-11', b:'2026-04-19'}, {d:[6,7], a:'2026-04-18', b:'2026-04-26'},
+    {d:[8,9], a:'2026-04-25', b:'2026-05-03'}, {d:[0,1], a:'2026-05-02', b:'2026-05-10'},
+    {d:[2,3], a:'2026-05-09', b:'2026-05-17'}, {d:[4,5], a:'2026-05-16', b:'2026-05-24'},
+    {d:[6,7], a:'2026-05-23', b:'2026-05-31'}, {d:[8,9], a:'2026-09-05', b:'2026-09-13'},
+    {d:[0,1], a:'2026-09-12', b:'2026-09-20'}, {d:[2,3], a:'2026-09-19', b:'2026-09-27'},
+    {d:[4,5], a:'2026-09-26', b:'2026-10-04'}, {d:[6,7], a:'2026-10-03', b:'2026-10-11'},
+    {d:[8,9], a:'2026-10-10', b:'2026-10-18'}, {d:[0,1], a:'2026-10-17', b:'2026-10-25'},
+    {d:[2,3], a:'2026-10-24', b:'2026-11-01'}
+  ];
+  function enRefuerzo(iso,dig){
+    for(var i=0;i<REFUERZOS.length;i++){ var r=REFUERZOS[i];
+      if(r.d.indexOf(dig)>=0 && within(iso,r.a,r.b)) return true; }
+    return false;
+  }
+  // Fechas especiales 24 h (toda la flota, sin descanso)
+  var ESPECIAL = [
+    ['2026-01-01','2026-01-01','Año Nuevo'], ['2026-04-03','2026-04-05','Semana Santa'],
+    ['2026-05-01','2026-05-01','1 de mayo'], ['2026-06-19','2026-06-25','Hogueras / San Juan'],
+    ['2026-12-13','2026-12-13','Refuerzo diciembre'], ['2026-12-20','2026-12-20','Refuerzo diciembre'],
+    ['2026-12-24','2026-12-25','Navidad'], ['2026-12-31','2026-12-31','Nochevieja']
+  ];
+  function fechaEspecial(iso){ for(var i=0;i<ESPECIAL.length;i++){ if(within(iso,ESPECIAL[i][0],ESPECIAL[i][1])) return ESPECIAL[i][2]; } return null; }
+  // Libre a partir de las 13:00
+  var LIBRE1300 = {'2026-12-17':1,'2026-12-18':1,'2026-12-21':1,'2026-12-22':1,'2026-12-23':1};
+  // Festivos par/impar: valor = grupo que TRABAJA
+  var PARIMPAR = {'2026-01-06':'pares','2026-03-19':'impares','2026-04-06':'pares','2026-04-16':'impares','2026-10-09':'pares','2026-10-12':'impares','2026-12-08':'pares'};
+  // Fines de semana especiales (poster oficial; el JSON no los lista — CONFIRMAR)
+  var FINDE_ESP = {'2026-10-31':'impares','2026-11-01':'pares'};
+  // Resto de festivos (descanso 09–14 toda la flota). 2026: ninguno suelto — todos caen en las reglas anteriores.
+  var RESTO = {};
+
+  function estado(iso, lic, adaptado){
+    var d = new Date(iso+'T12:00:00');
+    var dow = d.getDay();                 // 0 dom .. 6 sáb
+    var par = (lic%2===0), dig = lic%10;
+    var esFinde = (dow===0 || dow===6);
+    function lim(fest){ return (esFinde||fest) ? '24 h' : (within(iso,'2026-06-01','2026-09-11')?'24 h':'16 h'); }
+
+    if(adaptado)
+      return {cat:'exento', trabaja:true, descanso:null, limite:'24 h', msg:'Vehículo adaptado: exento de descansos, 24 h todos los días.'};
+
+    if(enRefuerzo(iso,dig))
+      return {cat:'refuerzo', trabaja:true, descanso:null, limite:lim(false), msg:'Semana de refuerzo: esta semana NO descansas.'};
+
+    var fe = fechaEspecial(iso);
+    if(fe)
+      return {cat:'especial', trabaja:true, descanso:null, limite:'24 h', msg:fe+': 24 h toda la flota, sin descanso.'};
+
+    if(LIBRE1300[iso])
+      return {cat:'libre1300', trabaja:true, descanso:'13:00–24:00', limite:'16 h', msg:'Libre a partir de las 13:00 (trabajas 00:00–13:00).'};
+
+    if(PARIMPAR[iso]){
+      var t = PARIMPAR[iso]; var yo = (t==='pares'&&par)||(t==='impares'&&!par);
+      return yo ? {cat:'festivo-trab', trabaja:true, descanso:null, limite:'24 h', msg:'Festivo: te toca TRABAJAR (24 h).'}
+                : {cat:'festivo', trabaja:false, descanso:'09:00–14:00', limite:'24 h', msg:'Festivo: descanso 09:00–14:00.'};
+    }
+    if(RESTO[iso])
+      return {cat:'festivo', trabaja:false, descanso:'09:00–14:00', limite:'24 h', msg:'Festivo: descanso 09:00–14:00.'};
+
+    if(esFinde){
+      if(FINDE_ESP[iso]){
+        var te = FINDE_ESP[iso]; var yoe = (te==='pares'&&par)||(te==='impares'&&!par);
+        return yoe ? {cat:'finde-trab', trabaja:true, descanso:null, limite:'24 h', msg:'Fin de semana especial: te toca TRABAJAR (24 h).'}
+                   : {cat:'descanso-finde', trabaja:false, descanso:'09:00–14:00', limite:'24 h', msg:'Fin de semana especial: descanso 09:00–14:00.'};
+      }
+      if(within(iso,'2026-06-06','2026-08-30'))
+        return {cat:'trabajo', trabaja:true, descanso:null, limite:'24 h', msg:'Verano: fin de semana sin descanso (24 h).'};
+      var fechaPar = (d.getDate()%2===0);
+      var yoD = (fechaPar && !par) || (!fechaPar && par);
+      return yoD ? {cat:'descanso-finde', trabaja:false, descanso:'09:00–14:00', limite:'24 h', msg:'Fin de semana: descanso 09:00–14:00.'}
+                 : {cat:'trabajo', trabaja:true, descanso:null, limite:'24 h', msg:'Fin de semana: te toca TRABAJAR (24 h).'};
+    }
+
+    var g = grupoInfo(lic);
+    if(g && dow===g.dia){
+      var franja = within(iso,'2026-06-02','2026-09-05') ? '02:00–14:00' : '02:00–22:00';
+      return {cat:'descanso-sem', trabaja:false, descanso:franja, limite:lim(false), msg:'Descanso semanal ('+g.letra+' · '+g.diaN+'): '+franja+'.'};
+    }
+    return {cat:'trabajo', trabaja:true, descanso:null, limite:lim(false), msg:'Día de trabajo (límite '+lim(false)+').'};
+  }
+
+  function horasMax(est){
+    if(!est.descanso) return est.limite==='24 h' ? 24 : 16;
+    var m = est.descanso.match(/(\d\d):(\d\d)–(\d\d):(\d\d)/);
+    var libres = ((+m[3])+(+m[4])/60) - ((+m[1])+(+m[2])/60);
+    var techo = est.limite==='24 h' ? 24 : 16;
+    return Math.min(techo, 24 - libres);
+  }
+
+  var API = {grupoInfo:grupoInfo, estado:estado, horasMax:horasMax};
+  if(typeof module!=='undefined' && module.exports) module.exports = API;
+  root.DESCANSOS = API;
+})(typeof window!=='undefined' ? window : globalThis);
+
+</script>
+<script>
+  const $=id=>document.getElementById(id);
+  const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const COL={ 'exento':'var(--c-exe)','trabajo':'var(--c-trab)','refuerzo':'var(--c-ref)','especial':'var(--c-esp)',
+    'festivo-trab':'var(--c-trab)','finde-trab':'var(--c-trab)','descanso-sem':'var(--c-desc)','descanso-finde':'var(--c-914)',
+    'festivo':'var(--c-914)','libre1300':'var(--c-1300)' };
+  const TAG={ 'exento':'Exento','trabajo':'Trabajo','refuerzo':'Trabajo','especial':'24 h','festivo-trab':'Festivo','finde-trab':'Finde',
+    'descanso-sem':'Descanso','descanso-finde':'9–14','festivo':'9–14','libre1300':'13:00' };
+  let year=2026, month=8, sel=null;   // month 0-11; por defecto septiembre
+
+  function lic(){ let v=parseInt($('lic').value,10); return (v>=1&&v<=538)?v:null; }
+  function adap(){ return $('adaptado').checked; }
+  function iso(y,m,d){ return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
+  function h1(hh){ return String(parseInt(hh,10)); }   // "09"->"9", "24"->"24"
+  // Bloque de descanso (dentro del mismo día 00:00–23:59)
+  function restBlock(desc){ const m=desc.match(/(\d\d):\d\d–(\d\d):\d\d/); return h1(m[1])+'–'+(m[2]==='24'?'24':h1(m[2])); }
+  // Tramos que SÍ puedes trabajar dentro del día (00–23:59). Medianoche = 00.
+  function fmtHora(x){ return (x===0||x===24)?'00':String(x); }
+  function segArr(desc){ if(!desc) return []; const m=desc.match(/(\d\d):\d\d–(\d\d):\d\d/); const a=parseInt(m[1],10), b=(m[2]==='24'?24:parseInt(m[2],10));
+    const s=[]; if(a>0) s.push('de 00 a '+fmtHora(a)); if(b<24) s.push('de '+fmtHora(b)+' a 00'); return s; }
+  function segStr(desc){ return segArr(desc).join(' y '); }
+  // Versión compacta para la casilla (una línea por tramo)
+  function segCompact(desc){ if(!desc) return []; const m=desc.match(/(\d\d):\d\d–(\d\d):\d\d/); const a=parseInt(m[1],10), b=(m[2]==='24'?24:parseInt(m[2],10));
+    const s=[]; if(a>0) s.push('0–'+a); if(b<24) s.push(b+'–24'); return s; }
+
+  function pintaGrupo(){
+    const l=lic(); if(!l){ $('grupo').textContent=''; return; }
+    const g=DESCANSOS.grupoInfo(l);
+    $('grupo').innerHTML = (adap()? 'Vehículo adaptado: sin descansos.' :
+      'Licencia '+l+' · '+(l%2===0?'PAR':'IMPAR')+' · último dígito '+(l%10)+' · descanso semanal: letra '+g.letra+' ('+g.diaN+').');
+  }
+
+  function render(){
+    $('mesTit').textContent = MESES[month]+' 2026';
+    const cal=$('cal'); cal.innerHTML='';
+    const l=lic();
+    const first=new Date(year,month,1);
+    let off=(first.getDay()+6)%7;              // Lun=0
+    for(let i=0;i<off;i++){ const v=document.createElement('div'); v.className='dia vacio'; cal.appendChild(v); }
+    const dim=new Date(year,month+1,0).getDate();
+    for(let d=1; d<=dim; d++){
+      const cell=document.createElement('div'); cell.className='dia';
+      const dayISO=iso(year,month,d);
+      if(!l){ cell.style.background='#c7ced2'; cell.innerHTML='<div class="top"><span class="n">'+d+'</span></div>'; }
+      else{
+        const est=DESCANSOS.estado(dayISO,l,adap());
+        cell.style.background=COL[est.cat]||'#888';
+        let r = est.cat==='refuerzo' ? '<span class="r">R</span>' : '<span></span>';
+        const h = Math.round(DESCANSOS.horasMax(est));
+        const lab = est.cat==='refuerzo' ? 'Refuerzo' : 'Trabajo';
+        const segs = segCompact(est.descanso).map(s=>'<div class="seg">'+s+'</div>').join('');
+        cell.innerHTML='<div class="top"><b class="n">'+d+'</b><span class="hh">'+h+'h</span></div>'+
+                       '<div class="lab">'+lab+'</div>'+segs;
+        cell.addEventListener('click',()=>{ sel=dayISO; verDetalle(dayISO); marcar(); });
+      }
+      cell.dataset.iso=dayISO;
+      cal.appendChild(cell);
+    }
+    // detalle por defecto
+    if(l){ if(!sel || sel.slice(0,7)!==iso(year,month,1).slice(0,7)) sel=defaultSel(); verDetalle(sel); }
+    marcar();
+  }
+  function defaultSel(){
+    const hoy=new Date(); const hy=hoy.getFullYear(), hm=hoy.getMonth();
+    if(hy===2026 && hm===month) return iso(2026,month,hoy.getDate());
+    return iso(year,month,1);
+  }
+  function marcar(){ document.querySelectorAll('.dia').forEach(c=>{ c.classList.toggle('sel', c.dataset.iso===sel && !c.classList.contains('vacio')); }); }
+  function verDetalle(dayISO){
+    const l=lic(); if(!l) return;
+    const est=DESCANSOS.estado(dayISO,l,adap());
+    const d=new Date(dayISO+'T12:00:00');
+    const dias=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+    const det=$('detalle'); det.style.background=COL[est.cat]||'#888';
+    const h = Math.round(DESCANSOS.horasMax(est));
+    det.querySelector('.f').textContent = dias[d.getDay()]+', '+d.getDate()+' de '+MESES[month];
+    if(est.descanso){
+      det.querySelector('.m').textContent = 'Descanso obligatorio '+restBlock(est.descanso)+' h';
+      det.querySelector('.h').textContent = 'Trabajas '+segStr(est.descanso)+'  ('+h+' h)';
+    } else {
+      det.querySelector('.m').textContent = est.msg;
+      det.querySelector('.h').textContent = 'Puedes trabajar hasta '+est.limite;
+    }
+  }
+
+  $('lic').addEventListener('input',()=>{ sel=null; pintaGrupo(); render(); });
+  $('adaptado').addEventListener('change',()=>{ pintaGrupo(); render(); });
+  $('prev').addEventListener('click',()=>{ if(month>0){month--; sel=null; render();} });
+  $('next').addEventListener('click',()=>{ if(month<11){month++; sel=null; render();} });
+
+  // arranque en el mes actual si estamos en 2026
+  (function(){ const h=new Date(); if(h.getFullYear()===2026) month=h.getMonth();
+    $('foot').innerHTML='Resolución D.G. de 27/11/2025 (DOGV 03/12/2025),<br>régimen de servicio y descanso del taxi en el APC de Alicante 2026.';
+    pintaGrupo(); render(); })();
+</script>
+</body>
+</html>
