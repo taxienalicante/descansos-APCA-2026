@@ -147,7 +147,7 @@
   // Festivos par/impar: valor = grupo que TRABAJA
   var PARIMPAR = {'2026-01-06':'pares','2026-03-19':'impares','2026-04-06':'pares','2026-04-16':'impares','2026-10-09':'pares','2026-10-12':'impares','2026-12-08':'pares'};
   // Fines de semana especiales (poster oficial; el JSON no los lista — CONFIRMAR)
-  var FINDE_ESP = {'2026-10-31':'impares','2026-11-01':'pares'};
+  var FINDE_ESP = {'2026-01-31':'impares','2026-02-01':'pares','2026-10-31':'impares','2026-11-01':'pares'};
   // Resto de festivos (descanso 09–14 toda la flota). 2026: ninguno suelto — todos caen en las reglas anteriores.
   var RESTO = {};
 
@@ -161,10 +161,14 @@
     if(adaptado)
       return {cat:'exento', trabaja:true, descanso:null, limite:'24 h', msg:'Vehículo adaptado: exento de descansos, 24 h todos los días.'};
 
-    if(enRefuerzo(iso,dig))
-      return {cat:'refuerzo', trabaja:true, descanso:null, limite:lim(false), msg:'Semana de refuerzo: esta semana NO descansas.'};
-
     var fe = fechaEspecial(iso);
+    // Dos dimensiones independientes: las HORAS dependen solo del tipo de día
+    // (festivo/finde/especial/verano = 24 h; resto L-V = 16 h). El refuerzo SOLO
+    // quita el descanso, nunca cambia el tope de horas.
+    var esFestOEsp = !!fe || !!PARIMPAR[iso];
+    if(enRefuerzo(iso,dig))
+      return {cat:'refuerzo', trabaja:true, descanso:null, limite:lim(esFestOEsp), msg:'Semana de refuerzo: esta semana NO descansas.'};
+
     if(fe)
       return {cat:'especial', trabaja:true, descanso:null, limite:'24 h', msg:fe+': 24 h toda la flota, sin descanso.'};
 
